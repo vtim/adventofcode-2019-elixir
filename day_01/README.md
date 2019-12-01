@@ -1,21 +1,8 @@
 # Day01
 
-**TODO: Add description**
+https://adventofcode.com/2019/day/1
 
-## Installation
+# Part 1
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `day_01` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:day_01, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/day_01](https://hexdocs.pm/day_01).
-
+    $ iex -S mix
+    $ iex(1)> Day01.calculate_full_fuel_requirements()
