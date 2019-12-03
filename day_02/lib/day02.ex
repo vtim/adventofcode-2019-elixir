@@ -8,15 +8,38 @@ defmodule Day02 do
   """
   def execute_part1 do
     input = File.read!("input.txt")
+
     input
     |> String.split(",")
-    |> List.replace_at(1, "12")
-    |> List.replace_at(2, "2")
-    |> Enum.join(",")
-    |> IntCode.process()
-    |> String.split(",")
+    |> Enum.map(&String.to_integer/1)
+    |> List.replace_at(1, 12)
+    |> List.replace_at(2, 2)
+    |> IntCode.process_list()
     |> Enum.at(0)
     |> IO.puts()
+  end
+
+  @doc """
+  Executes part 2 of Day 2
+  """
+  def execute_part2 do
+    input =
+      File.read!("input.txt")
+      |> String.split(",")
+      |> Enum.map(&String.to_integer/1)
+
+    for i <- 0..99 do
+      input = List.replace_at(input, 1, i)
+
+      for j <- 0..99 do
+        input = List.replace_at(input, 2, j)
+        res = IntCode.process_list(input)
+
+        if Enum.at(res, 0) == 19_690_720 do
+          IO.puts("Found it! The answer is #{(i * 100) + j}")
+        end
+      end
+    end
   end
 end
 
@@ -36,6 +59,11 @@ defmodule IntCode do
     |> Enum.map(&String.to_integer/1)
     |> operate()
     |> Enum.join(",")
+  end
+
+  def process_list(list) do
+    list
+    |> operate()
   end
 
   @spec operate(any, integer) :: [any]
