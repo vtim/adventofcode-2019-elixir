@@ -4,16 +4,19 @@ defmodule Day02 do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Day02.hello()
-      :world
-
+  Executes part 1 of Day 2
   """
-  def hello do
-    :world
+  def execute_part1 do
+    input = File.read!("input.txt")
+    input
+    |> String.split(",")
+    |> List.replace_at(1, "12")
+    |> List.replace_at(2, "2")
+    |> Enum.join(",")
+    |> IntCode.process()
+    |> String.split(",")
+    |> Enum.at(0)
+    |> IO.puts()
   end
 end
 
