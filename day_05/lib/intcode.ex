@@ -32,50 +32,70 @@ defmodule IntCode do
   @spec execute(any, integer) :: [any]
   def execute(program, idx \\ 0) do
     operation = Enum.at(program, idx)
+    opcode = rem(operation, 100)
+    parameter_modes = floor(operation / 100)
 
-    case perform(operation, program, idx) do
+    case perform(opcode, parameter_modes, program, idx) do
       {new_program, :halt} -> new_program
       {new_program, new_index} -> execute(new_program, new_index)
     end
   end
 
-  defp perform(operation, program, idx)
+  defp perform(opcode, parameter_modes, program, idx)
 
-  defp perform(99, program, _idx), do: {program, :halt}
+  defp perform(99, _parameter_modes, program, _idx), do: {program, :halt}
 
-  defp perform(1, program, idx) do
-    idx1 = Enum.at(program, idx + 1)
-    idx2 = Enum.at(program, idx + 2)
+  defp perform(1, parameter_modes, program, idx) do
+    param1 = get_param(program, idx, 1, parameter_modes)
+    param2 = get_param(program, idx, 2, parameter_modes)
 
-    result = Enum.at(program, idx1) + Enum.at(program, idx2)
+    result = param1 + param2
 
-    result_index = Enum.at(program, idx + 3)
-    new_program = List.replace_at(program, result_index, result)
+    new_program = set_result(program, result, idx + 3, parameter_modes)
     {new_program, idx + 4}
   end
 
-  defp perform(2, program, idx) do
-    idx1 = Enum.at(program, idx + 1)
-    idx2 = Enum.at(program, idx + 2)
+  defp perform(2, parameter_modes, program, idx) do
+    param1 = get_param(program, idx, 1, parameter_modes)
+    param2 = get_param(program, idx, 2, parameter_modes)
 
-    result = Enum.at(program, idx1) * Enum.at(program, idx2)
+    result = param1 * param2
 
-    result_index = Enum.at(program, idx + 3)
-    new_program = List.replace_at(program, result_index, result)
+    new_program = set_result(program, result, idx + 3, parameter_modes)
     {new_program, idx + 4}
   end
 
-  defp perform(3, program, idx) do
+  defp perform(3, parameter_modes, program, idx) do
     result = IO.gets("Input number") |> String.to_integer()
-    result_index = Enum.at(program, idx + 1)
-    new_program = List.replace_at(program, result_index, result)
+    new_program = set_result(program, result, idx + 1, parameter_modes)
     {new_program, idx + 2}
   end
 
-  defp perform(4, program, idx) do
-    output_idx = Enum.at(program, idx + 1)
-    output_value = Enum.at(program, output_idx)
+  defp perform(4, parameter_modes, program, idx) do
+    output_value = get_param(program, idx, 1, parameter_modes)
     IO.puts(output_value)
     {program, idx + 2}
+  end
+
+  def get_param(program, idx, param_position, parameter_modes) do
+    # IO.puts("Get param #{idx}, #{param_position}, #{parameter_modes}")
+    # IO.inspect(program)
+    # IO.puts("---")
+    param_index = Enum.at(program, idx + param_position)
+    quotient = trunc(:math.pow(10, param_position - 1))
+    param_mode = rem(div(parameter_modes, quotient), 10)
+
+    case param_mode do
+      0 ->
+        Enum.at(program, param_index)
+
+      1 ->
+        param_index
+    end
+  end
+
+  def set_result(program, value, idx, _parameter_modes) do
+    result_index = Enum.at(program, idx)
+    List.replace_at(program, result_index, value)
   end
 end

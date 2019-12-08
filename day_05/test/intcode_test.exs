@@ -40,4 +40,9 @@ defmodule IntCodeTest do
 
     assert capture_io(execute) == "4\n"
   end
+
+  test "Support parameter modes in input" do
+    assert IntCode.execute_binary("00002,1,0,3,99") == "2,1,0,2,99"
+    assert IntCode.execute_binary("1002,4,3,4,33") == "1002,4,3,4,99"
+  end
 end
