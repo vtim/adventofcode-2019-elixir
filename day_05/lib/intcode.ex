@@ -66,7 +66,7 @@ defmodule IntCode do
   end
 
   defp perform(3, parameter_modes, program, idx) do
-    result = IO.gets("Input number") |> String.to_integer()
+    result = IO.gets("Input number: ") |> String.replace("\n", "") |> String.to_integer()
     new_program = set_result(program, result, idx + 1, parameter_modes)
     {new_program, idx + 2}
   end

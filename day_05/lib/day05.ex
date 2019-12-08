@@ -1,5 +1,7 @@
 defmodule Day05 do
-  @moduledoc """
-  Documentation for Day05.
-  """
+  def part1 do
+    "input.txt"
+    |> File.read!()
+    |> IntCode.execute_binary()
+  end
 end
