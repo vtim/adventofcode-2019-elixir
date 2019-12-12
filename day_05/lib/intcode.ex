@@ -31,6 +31,8 @@ defmodule IntCode do
 
   @spec execute(any, integer) :: [any]
   def execute(program, idx \\ 0) do
+    # IO.puts("Execute program at idx #{idx}")
+    # IO.inspect(program)
     operation = Enum.at(program, idx)
     opcode = rem(operation, 100)
     parameter_modes = floor(operation / 100)
@@ -108,6 +110,7 @@ defmodule IntCode do
     param_index = Enum.at(program, idx + param_position)
     quotient = trunc(:math.pow(10, param_position - 1))
     param_mode = rem(div(parameter_modes, quotient), 10)
+    # IO.puts("> param_index = #{param_index}; param_mode = #{param_mode}")
 
     case param_mode do
       0 ->
