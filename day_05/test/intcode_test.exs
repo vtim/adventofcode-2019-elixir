@@ -34,15 +34,55 @@ defmodule IntCodeTest do
   end
 
   test "Opcode 4 outputs a value" do
-    execute = fn ->
-      assert IntCode.execute_binary("4,0,99") == "4,0,99"
-    end
-
-    assert capture_io(execute) == "4\n"
+    assert capture_io(fn ->
+             assert IntCode.execute_binary("4,0,99") == "4,0,99"
+           end) == "4\n"
   end
 
   test "Support parameter modes in input" do
     assert IntCode.execute_binary("00002,1,0,3,99") == "2,1,0,2,99"
     assert IntCode.execute_binary("1002,4,3,4,33") == "1002,4,3,4,99"
+  end
+
+  test "Opcode 5 jumps to second parameter if first parameter is non-zero" do
+    assert IntCode.execute_binary("5,3,1,99") == "5,3,1,99"
+    assert IntCode.execute_binary("1005,99,1") == "1005,99,1"
+  end
+
+  test "Opcode 5 does nothing if first parameter is zero" do
+    assert IntCode.execute_binary("5,3,1,99") == "5,3,1,99"
+  end
+
+  test "Opcode 6 jumps to second parameter if first parameter is zero" do
+    assert IntCode.execute_binary("6,5,3,4,99,0") == "6,5,3,4,99,0"
+    assert IntCode.execute_binary("1106,0,3,99") == "1106,0,3,99"
+  end
+
+  test "Opcode 6 does nothing if first parameter is non-zero" do
+    assert IntCode.execute_binary("6,3,1,99") == "6,3,1,99"
+  end
+
+  test_with_mock "Jump test 0 using position mode", IO, [:passthrough], gets: fn _ -> "0" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9")
+           end) == "0\n"
+  end
+
+  test_with_mock "Jump test 1 using position mode", IO, [:passthrough], gets: fn _ -> "54" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9")
+           end) == "1\n"
+  end
+
+  test_with_mock "Jump test 0 using immediate mode", IO, [:passthrough], gets: fn _ -> "0" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9")
+           end) == "0\n"
+  end
+
+  test_with_mock "Jump test 1 using immediate mode", IO, [:passthrough], gets: fn _ -> "54" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9")
+           end) == "1\n"
   end
 end

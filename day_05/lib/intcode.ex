@@ -77,6 +77,30 @@ defmodule IntCode do
     {program, idx + 2}
   end
 
+  defp perform(5, parameter_modes, program, idx) do
+    first_param = get_param(program, idx, 1, parameter_modes)
+
+    new_index =
+      case first_param do
+        0 -> idx + 3
+        _ -> get_param(program, idx, 2, parameter_modes)
+      end
+
+    {program, new_index}
+  end
+
+  defp perform(6, parameter_modes, program, idx) do
+    first_param = get_param(program, idx, 1, parameter_modes)
+
+    new_index =
+      case first_param do
+        0 -> get_param(program, idx, 2, parameter_modes)
+        _ -> idx + 3
+      end
+
+    {program, new_index}
+  end
+
   def get_param(program, idx, param_position, parameter_modes) do
     # IO.puts("Get param #{idx}, #{param_position}, #{parameter_modes}")
     # IO.inspect(program)
