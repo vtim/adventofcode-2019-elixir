@@ -105,4 +105,103 @@ defmodule IntCodeTest do
     assert IntCode.execute_binary("1108,1,-1,3,99") == "1108,1,-1,0,99"
     assert IntCode.execute_binary("1108,23,86,3,99") == "1108,23,86,0,99"
   end
+
+  test_with_mock "Equality example tests (position mode): output 1 if input is 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "8" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,9,8,9,10,9,4,9,99,-1,8")
+           end) == "1\n"
+  end
+
+  test_with_mock "Equality example tests (position mode): output 0 if input != 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "6" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,9,8,9,10,9,4,9,99,-1,8")
+           end) == "0\n"
+  end
+
+  test_with_mock "Equality example tests (position mode): output 1 if input is < 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "7" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,9,7,9,10,9,4,9,99,-1,8")
+           end) == "1\n"
+  end
+
+  test_with_mock "Equality example tests (position mode): output 0 if input is not < 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "8" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,9,7,9,10,9,4,9,99,-1,8")
+           end) == "0\n"
+  end
+
+  test_with_mock "Equality example tests (immediate mode): output 1 if input is 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "8" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,3,1108,-1,8,3,4,3,99")
+           end) == "1\n"
+  end
+
+  test_with_mock "Equality example tests (immediate mode): output 0 if input != 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "7" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,3,1108,-1,8,3,4,3,99")
+           end) == "0\n"
+  end
+
+  test_with_mock "Equality example tests (immediate mode): output 1 if input is < 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "7" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,3,1107,-1,8,3,4,3,99")
+           end) == "1\n"
+  end
+
+  test_with_mock "Equality example tests (immediate mode): output 0 if input is not < 8",
+                 IO,
+                 [:passthrough],
+                 gets: fn _ -> "8" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary("3,3,1107,-1,8,3,4,3,99")
+           end) == "0\n"
+  end
+
+  test_with_mock "Larger example outputs 999 if input is below 8", IO, [:passthrough],
+    gets: fn _ -> "4" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary(
+               "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+             )
+           end) == "999\n"
+  end
+
+  test_with_mock "Larger example outputs 1000 if input is 8", IO, [:passthrough],
+    gets: fn _ -> "8" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary(
+               "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+             )
+           end) == "1000\n"
+  end
+
+  test_with_mock "Larger example outputs 1001 if input is greater than 8", IO, [:passthrough],
+    gets: fn _ -> "20" end do
+    assert capture_io(fn ->
+             IntCode.execute_binary(
+               "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+             )
+           end) == "1001\n"
+  end
 end
