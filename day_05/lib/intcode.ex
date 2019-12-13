@@ -53,7 +53,7 @@ defmodule IntCode do
 
     result = param1 + param2
 
-    new_program = set_result(program, result, idx + 3, parameter_modes)
+    new_program = set_result(program, result, idx, 3, parameter_modes)
     {new_program, idx + 4}
   end
 
@@ -63,13 +63,13 @@ defmodule IntCode do
 
     result = param1 * param2
 
-    new_program = set_result(program, result, idx + 3, parameter_modes)
+    new_program = set_result(program, result, idx, 3, parameter_modes)
     {new_program, idx + 4}
   end
 
   defp perform(3, parameter_modes, program, idx) do
     result = IO.gets("Input number: ") |> String.replace("\n", "") |> String.to_integer()
-    new_program = set_result(program, result, idx + 1, parameter_modes)
+    new_program = set_result(program, result, idx, 1, parameter_modes)
     {new_program, idx + 2}
   end
 
@@ -103,6 +103,34 @@ defmodule IntCode do
     {program, new_index}
   end
 
+  defp perform(7, parameter_modes, program, idx) do
+    param1 = get_param(program, idx, 1, parameter_modes)
+    param2 = get_param(program, idx, 2, parameter_modes)
+
+    result =
+      case param1 < param2 do
+        true -> 1
+        false -> 0
+      end
+
+    new_program = set_result(program, result, idx, 3, parameter_modes)
+    {new_program, idx + 4}
+  end
+
+  defp perform(8, parameter_modes, program, idx) do
+    param1 = get_param(program, idx, 1, parameter_modes)
+    param2 = get_param(program, idx, 2, parameter_modes)
+
+    result =
+      case param1 == param2 do
+        true -> 1
+        false -> 0
+      end
+
+    new_program = set_result(program, result, idx, 3, parameter_modes)
+    {new_program, idx + 4}
+  end
+
   def get_param(program, idx, param_position, parameter_modes) do
     # IO.puts("Get param #{idx}, #{param_position}, #{parameter_modes}")
     # IO.inspect(program)
@@ -121,8 +149,10 @@ defmodule IntCode do
     end
   end
 
-  def set_result(program, value, idx, _parameter_modes) do
-    result_index = Enum.at(program, idx)
+  def set_result(program, value, idx, result_position, _parameter_modes) do
+    # IO.puts("Setting value #{value} at index #{idx} + #{result_position}")
+    # IO.inspect(program)
+    result_index = Enum.at(program, idx + result_position)
     List.replace_at(program, result_index, value)
   end
 end

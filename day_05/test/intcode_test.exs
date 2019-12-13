@@ -85,4 +85,24 @@ defmodule IntCodeTest do
              IntCode.execute_binary("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9")
            end) == "1\n"
   end
+
+  test "Opcode 7 stores 1 in param3 if param1 is less than param2" do
+    assert IntCode.execute_binary("1107,1,2,3,99") == "1107,1,2,1,99"
+    assert IntCode.execute_binary("1107,23,86,3,99") == "1107,23,86,1,99"
+  end
+
+  test "Opcode 7 stores 0 in param3 if param1 is not less than param2" do
+    assert IntCode.execute_binary("1107,2,1,3,99") == "1107,2,1,0,99"
+    assert IntCode.execute_binary("1107,86,23,3,99") == "1107,86,23,0,99"
+  end
+
+  test "Opcode 8 stores 1 in param3 if param1 is equal to param2" do
+    assert IntCode.execute_binary("1108,1,1,3,99") == "1108,1,1,1,99"
+    assert IntCode.execute_binary("1108,23,23,3,99") == "1108,23,23,1,99"
+  end
+
+  test "Opcode 8 stores 0 in param3 if param1 is not equal to param2" do
+    assert IntCode.execute_binary("1108,1,-1,3,99") == "1108,1,-1,0,99"
+    assert IntCode.execute_binary("1108,23,86,3,99") == "1108,23,86,0,99"
+  end
 end
