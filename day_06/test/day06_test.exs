@@ -1,10 +1,6 @@
 defmodule Day06Test do
   use ExUnit.Case
   doctest Day06
-
-  test "greets the world" do
-    assert Day06.hello() == :world
-  end
 end
 
 defmodule OrbitMapTest do
@@ -55,5 +51,31 @@ defmodule OrbitMapTest do
              "K" => "J",
              "L" => "K"
            }
+  end
+
+  test "Convert OrbitMap to List with given object" do
+    map = %{"A" => "COM", "B" => "A", "YOU" => "B", "C" => "A", "SAN" => "C"}
+    assert OrbitMap.list_for(map, "YOU") == ["COM", "A", "B", "YOU"]
+    assert OrbitMap.list_for(map, "SAN") == ["COM", "A", "C", "SAN"]
+
+    assert OrbitMap.count_transfers(map, "YOU", "SAN") == 2
+  end
+
+  test "Example orbit hop count" do
+    assert """
+    COM)B
+    B)C
+    C)D
+    D)E
+    E)F
+    B)G
+    G)H
+    D)I
+    E)J
+    J)K
+    K)L
+    K)YOU
+    I)SAN
+    """ |> OrbitMap.parse |> OrbitMap.count_transfers("YOU", "SAN") == 4
   end
 end
